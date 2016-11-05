@@ -35,7 +35,7 @@ cryptsetup luksFormat /dev/sda3
 cryptsetup open --type luks /dev/sda3 lvm
 
 = Setup lvm =
-pacman -S lvm2
+pacman -S --noconfirm lvm2
 pvcreate /dev/mapper/lvm
 vgcreate volgroup /dev/mapper/lvm
 lvcreate -L 20G volgroup -n lvolswap
@@ -70,7 +70,7 @@ localectl set-locale LANG=en_GB.UTF-8
 echo 'bashton-ajenkins' > /etc/hostname
 
 # networking
-pacman -S wpa_supplicant
+pacman -S --noconfirm wpa_supplicant
 ## wired
 export INTERFACE=`ip link | grep '2:' | cut -d' ' -f 2 | sed 's/://'` 
 cat << EOF > /etc/systemd/network/${INTERFACE}.network
@@ -121,7 +121,7 @@ sed -i 's/base udev autodetect modconf block filesystems keyboard fsck/base udev
 mkinitcpio -p linux
 
 # setup efi
-pacman -S efibootmgr
+pacman -S --noconfirm efibootmgr
 mkdir -p /esp/EFI/arch/
 cp /boot/vmlinuz-linux /esp/EFI/arch/
 cp /boot/initramfs-linux.img /esp/EFI/arch/
@@ -130,21 +130,21 @@ efibootmgr -d /dev/sda -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u
 initrd=/EFI/arch/initramfs-linux.img luks.name=lvm"
 
 # gpu drivers
-pacman -S mesa-libgl lib32-mesa-libgl
+pacman -S --noconfirm mesa-libgl lib32-mesa-libgl
 ## actual machine
-# pacman -S xf86-video-intel
+# pacman -S --noconfirm xf86-video-intel
 
 ## vm
-pacman -S xf86-video-vmware xf86-input-vmmouse open-vm-tools
+pacman -S --noconfirm xf86-video-vmware xf86-input-vmmouse open-vm-tools
 
 # gui apps
-pacman -S gvim lightdm lightdm-gtk-greeter i3-wm i3status dmenu termite
+pacman -S --noconfirm gvim lightdm lightdm-gtk-greeter i3-wm i3status dmenu termite
 chromium firefox virtualbox compton feh evince libreoffice inkscape gimp 
 
 systemctl enable lightdm
 
 # cli apps
-pacman -S openssh vagrant gnu-netcat pkgfile bind-tools nmap nethogs sudo htop
+pacman -S --noconfirm openssh vagrant gnu-netcat pkgfile bind-tools nmap nethogs sudo htop
 tmux iotop git tig the_silver_searcher puppet dos2unix unix2dos ncdu ranger
 pkgfile -u
 
