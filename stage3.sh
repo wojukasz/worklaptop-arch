@@ -74,7 +74,7 @@ export LUKSUUID=`blkid /dev/sda3 | awk '{ print $2; }' | sed 's/"//g'`
 efibootmgr -d /dev/sda -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u "cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img"
 
 # gpu drivers
-pacman -S --noconfirm mesa-libgl lib32-mesa-libgl
+pacman -S --noconfirm mesa-libgl lib32-mesa-libgl xorg-server
 ## actual machine
 # pacman -S --noconfirm xf86-video-intel
 
@@ -82,7 +82,7 @@ pacman -S --noconfirm mesa-libgl lib32-mesa-libgl
 pacman -S --noconfirm xf86-video-vmware xf86-input-vmmouse open-vm-tools
 
 # gui apps
-pacman -S --noconfirm gvim lightdm lightdm-gtk-greeter i3-wm i3status dmenu termite chromium firefox virtualbox compton feh evince libreoffice inkscape gimp 
+pacman -S --noconfirm gvim lightdm lightdm-gtk-greeter i3-wm i3status dmenu termite chromium firefox virtualbox compton feh evince libreoffice inkscape gimp inkscape
 
 systemctl enable lightdm
 
@@ -118,4 +118,4 @@ echo -e "\twpa_passphrase SSID PASSWORD >
 /etc/wpa_supplicant/wpa_supplicant-${INTERFACE}.conf"
 echo -e "\tsystemctl enable wpa_supplicant@${INTERFACE}.conf"
 echo "After reboot:"
-echo -e "\tln -sf /run/systemd/resolve/resolve.conf /etc/resolv.conf"
+echo -e "\tln -sf /run/systemd/resolve/resolv.conf /etc/resolv.conf"
