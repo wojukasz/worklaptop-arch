@@ -34,4 +34,5 @@ mkfs.ext4 -F /dev/sda2
 echo "Run these to setup the encrypted partition:"
 echo -e "\tcryptsetup luksFormat /dev/sda3"
 echo -e "\tcryptsetup open --type luks /dev/sda3 lvm"
+echo -e "\tbash stage2.sh"
 
