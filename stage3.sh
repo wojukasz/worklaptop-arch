@@ -83,7 +83,7 @@ pacman -S --noconfirm mesa-libgl lib32-mesa-libgl xorg-server
 pacman -S --noconfirm xf86-video-vmware xf86-input-vmmouse open-vm-tools
 
 # gui apps
-pacman -S --noconfirm gvim lightdm lightdm-gtk-greeter i3-wm i3status dmenu termite chromium firefox virtualbox compton feh evince libreoffice inkscape gimp inkscape i3lock shutter gnome-web-photo
+pacman -S --noconfirm gvim lightdm lightdm-gtk-greeter i3-wm i3status dmenu termite chromium firefox virtualbox compton feh evince libreoffice inkscape gimp inkscape i3lock shutter gnome-web-photo wireshark
 
 systemctl enable lightdm
 
