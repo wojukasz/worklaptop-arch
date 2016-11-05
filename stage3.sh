@@ -108,7 +108,10 @@ visudo -c
 groupadd sudo
 gpasswd -a alan sudo
 
-# set passwords
+sudo -u alan mkdir -p /home/alan/git
+cd /home/alan/git
+sudo -u alan git clone --recursive https://github.com/demon012/dotphiles
+sudo -u alan ./dotphiles/dotsync/bin/dotsync -L
 
 # manual commands:
 echo "run:"
