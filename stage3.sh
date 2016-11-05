@@ -54,7 +54,7 @@ iptables-save > /etc/iptables/iptables.rules
 systemctl enable iptables
 
 # initramfs
-sed -i 's/base udev autodetect modconf block filesystems keyboard fsck/base udev autodetect modconf block sd-encrypt filesystems keyboard fsck/g' 
+sed -i 's/base udev autodetect modconf block filesystems keyboard fsck/base udev autodetect modconf block sd-encrypt filesystems keyboard fsck/g' /etc/mkinitcpio.conf
 mkinitcpio -p linux
 
 # setup efi
@@ -62,9 +62,7 @@ pacman -S --noconfirm efibootmgr
 mkdir -p /esp/EFI/arch/
 cp /boot/vmlinuz-linux /esp/EFI/arch/
 cp /boot/initramfs-linux.img /esp/EFI/arch/
-efibootmgr -d /dev/sda -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u
-"root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw
-initrd=/EFI/arch/initramfs-linux.img luks.name=lvm"
+efibootmgr -d /dev/sda -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u "root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img luks.name=lvm"
 
 # gpu drivers
 pacman -S --noconfirm mesa-libgl lib32-mesa-libgl
@@ -93,7 +91,7 @@ chmod 750 /home/alan
 
 ex - /etc/sudoers << end-of-script
 88
-s///
+s/# //
 wq
 end-of-script
 

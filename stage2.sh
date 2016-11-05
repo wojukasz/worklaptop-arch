@@ -25,8 +25,9 @@ genfstab -L /mnt > /mnt/etc/fstab
 
 cp stage3.sh /mnt/
 
-arch-chroot /mnt
-
 echo "Run:"
 echo -e "\tbash stage3.sh"
+
+arch-chroot /mnt
+
 
