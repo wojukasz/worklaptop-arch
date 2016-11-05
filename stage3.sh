@@ -70,7 +70,7 @@ pacman -S --noconfirm efibootmgr
 mkdir -p /esp/EFI/arch/
 cp /boot/vmlinuz-linux /esp/EFI/arch/
 cp /boot/initramfs-linux.img /esp/EFI/arch/
-export LUKSUUID=`blkid 
+export LUKSUUID=`blkid /dev/sda3 | awk '{ print $2; }' | sed 's/"//g'`
 efibootmgr -d /dev/sda -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u "cryptdevice=UUID=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img"
 
 # gpu drivers
