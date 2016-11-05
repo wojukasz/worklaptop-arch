@@ -1,4 +1,5 @@
 #!/bin/bash
+# goo.gl/ayIfUA
 # setup locale
 sed -i 's/#en_GB/en_GB/g' /etc/locale.gen
 sed -i 's/#en_US/en_US/g' /etc/locale.gen
@@ -40,6 +41,10 @@ systemctl enable systemd-networkd
 systemctl enable systemd-resolved
 ## ln -sf /run/systemd/resolve/resolve.conf /etc/resolv.conf ##! Troublesome, may need to run manually
 # firewall
+iptables -N TCP
+iptables -N UDP
+iptables -P FORWARD DROP
+iptables -P OUTPUT ACCEPT
 iptables -P INPUT DROP
 iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 iptables -A INPUT -i lo -j ACCEPT
@@ -79,8 +84,7 @@ chromium firefox virtualbox compton feh evince libreoffice inkscape gimp
 systemctl enable lightdm
 
 # cli apps
-pacman -S --noconfirm openssh vagrant gnu-netcat pkgfile bind-tools nmap nethogs sudo htop
-tmux iotop git tig the_silver_searcher puppet dos2unix unix2dos ncdu ranger
+pacman -S --noconfirm openssh vagrant gnu-netcat pkgfile bind-tools nmap nethogs sudo htop tmux iotop git tig the_silver_searcher puppet dos2unix unix2dos ncdu ranger
 pkgfile -u
 
 # create user
