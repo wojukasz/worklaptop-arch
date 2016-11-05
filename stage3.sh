@@ -73,6 +73,7 @@ cp /boot/initramfs-linux.img /esp/EFI/arch/
 export LUKSUUID=`blkid /dev/sda3 | awk '{ print $2; }' | sed 's/"//g'`
 efibootmgr -d /dev/sda -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u "cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img"
 
+
 # gpu drivers
 pacman -S --noconfirm mesa-libgl lib32-mesa-libgl xorg-server
 ## actual machine
@@ -105,6 +106,7 @@ end-of-script
 
 visudo -c
 
+
 groupadd sudo
 gpasswd -a alan sudo
 
@@ -113,8 +115,17 @@ cd /home/alan/git
 sudo -u alan git clone --recursive https://github.com/demon012/dotphiles
 sudo -u alan ./dotphiles/dotsync/bin/dotsync -L
 
+# install yaourt
+cd /tmp/
+sudo -u alan git clone https://aur.archlinux.org/package-query.git
+sudo -u alan git clone https://aur.archlinux.org/yaourt.git
+cd /tmp/package-query.git
+
 # manual commands:
 echo "run:"
+echo -e "\tsudo -u alan makepkg -si"
+echo -e "\tcd ../yaourt"
+echo -e "\tmakepkg -si"
 echo -e "\tpasswd root"
 echo -e "\tpasswd alan"
 echo -e "\twpa_passphrase SSID PASSWORD >
