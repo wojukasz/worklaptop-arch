@@ -24,6 +24,7 @@ name 2 boot
 name 3 lvm
 toggle 1 boot
 toggle 3 lvm
+quit
 
 mkfs.vfat -F32 /dev/sda1
 mkfs.ext4 /dev/sda2
