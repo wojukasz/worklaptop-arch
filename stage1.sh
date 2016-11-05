@@ -24,7 +24,7 @@ parted -s /dev/sda toggle 1 boot
 parted -s /dev/sda toggle 3 lvm
 
 mkfs.vfat -F32 /dev/sda1
-mkfs.ext4 /dev/sda2
+mkfs.ext4 -F /dev/sda2
 
 ## end stage 1 ##
 
