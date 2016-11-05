@@ -1,6 +1,9 @@
 #!/bin/bash
 ### Arch Workstation Provisioning ###
 
+# fetch stages of script
+
+## stage 1 ##
 # enable multilib
 ex - /etc/pacman.conf << end-of-script
 93
@@ -29,12 +32,16 @@ quit
 mkfs.vfat -F32 /dev/sda1
 mkfs.ext4 /dev/sda2
 
+## end stage 1 ##
+
+
 # Install device-mapper cryptsetup
 
-cryptsetup luksFormat /dev/sda3
-cryptsetup open --type luks /dev/sda3 lvm
+echo "Run these to setup the encrypted partition:"
+echo -e "\tcryptsetup luksFormat /dev/sda3"
+echo -e "\tcryptsetup open --type luks /dev/sda3 lvm"
 
-= Setup lvm =
+## stage 2 ##
 pacman -S --noconfirm lvm2
 pvcreate /dev/mapper/lvm
 vgcreate volgroup /dev/mapper/lvm
@@ -99,9 +106,7 @@ EOF
 
 systemctl enable systemd-networkd
 systemctl enable systemd-resolved
-## ln -sf /run/systemd/resolve/resolve.conf /etc/resolv.conf ##! Troublesome,
-may need to run manually
-
+## ln -sf /run/systemd/resolve/resolve.conf /etc/resolv.conf ##! Troublesome, may need to run manually
 # firewall
 iptables -P INPUT DROP
 iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
@@ -117,7 +122,7 @@ iptables-save > /etc/iptables/iptables.rules
 systemctl enable iptables
 
 # initramfs
-sed -i 's/base udev autodetect modconf block filesystems keyboard fsck/base udev autodetect modconf block sd-encrypt filesystems keyboard fsck/g'
+sed -i 's/base udev autodetect modconf block filesystems keyboard fsck/base udev autodetect modconf block sd-encrypt filesystems keyboard fsck/g' 
 mkinitcpio -p linux
 
 # setup efi
