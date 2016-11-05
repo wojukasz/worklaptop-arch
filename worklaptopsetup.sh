@@ -1,4 +1,6 @@
 #!/bin/bash
+# cd /tmp
+# curl -L goo.gl/EHCi8l
 ### Arch Workstation Provisioning ###
 
 # fetch stages of script
