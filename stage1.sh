@@ -13,17 +13,15 @@ end-of-script
 pacman -Sy
 
 # Setup EFI and boot 
-parted /dev/sda
-mklabel gpt
-mkpart esp fat32 1M 1G
-mkpart boot ext4 1G 2G
-mkpart lvm ext2 2G -1
-name 1 esp
-name 2 boot
-name 3 lvm
-toggle 1 boot
-toggle 3 lvm
-quit
+parted -s /dev/sda mklabel gpt
+parted -s /dev/sda mkpart esp fat32 1M 1G
+parted -s /dev/sda mkpart boot ext4 1G 2G
+parted -s /dev/sda mkpart lvm ext2 2G -1
+parted -s /dev/sda name 1 esp
+parted -s /dev/sda name 2 boot
+parted -s /dev/sda name 3 lvm
+parted -s /dev/sda toggle 1 boot
+parted -s /dev/sda toggle 3 lvm
 
 mkfs.vfat -F32 /dev/sda1
 mkfs.ext4 /dev/sda2
