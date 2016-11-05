@@ -1,7 +1,7 @@
 #!/bin/bash
 # goo.gl/ayIfUA
 # setup crypttab
-echo "home        /dev/sda3 none luks,timeout=180" >> /etc/crypttab
+#echo "lvm        /dev/sda3 none luks,timeout=180" >> /etc/crypttab
 
 # setup locale
 sed -i 's/#en_GB/en_GB/g' /etc/locale.gen
@@ -62,7 +62,7 @@ iptables-save > /etc/iptables/iptables.rules
 systemctl enable iptables
 
 # initramfs
-sed -i 's/base udev autodetect modconf block filesystems keyboard fsck/base udev autodetect modconf block systemd sd-encrypt filesystems keyboard fsck/g' /etc/mkinitcpio.conf
+sed -i 's/base udev autodetect modconf block filesystems keyboard fsck/base udev autodetect modconf block systemd sd-encrypt lvm2 filesystems keyboard fsck/g' /etc/mkinitcpio.conf
 mkinitcpio -p linux
 
 # setup efi
@@ -70,7 +70,8 @@ pacman -S --noconfirm efibootmgr
 mkdir -p /esp/EFI/arch/
 cp /boot/vmlinuz-linux /esp/EFI/arch/
 cp /boot/initramfs-linux.img /esp/EFI/arch/
-efibootmgr -d /dev/sda -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u "root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img luks.name=lvm"
+export LUKSUUID=`blkid 
+efibootmgr -d /dev/sda -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u "cryptdevice=UUID=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img"
 
 # gpu drivers
 pacman -S --noconfirm mesa-libgl lib32-mesa-libgl
