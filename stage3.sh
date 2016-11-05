@@ -123,6 +123,7 @@ sudo -u alan git clone https://aur.archlinux.org/package-query.git
 cd /tmp/package-query
 sudo -u alan makepkg -s
 pacman -U --noconfirm *.tar.xz
+cd /tmp/
 sudo -u alan git clone https://aur.archlinux.org/yaourt.git
 cd /tmp/yaourt
 sudo -u alan makepkg -s
