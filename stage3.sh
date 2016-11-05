@@ -62,7 +62,7 @@ iptables-save > /etc/iptables/iptables.rules
 systemctl enable iptables
 
 # initramfs
-sed -i 's/base udev autodetect modconf block filesystems keyboard fsck/base udev autodetect modconf block systemd sd-encrypt lvm2 filesystems keyboard fsck/g' /etc/mkinitcpio.conf
+sed -i 's/base udev autodetect modconf block filesystems keyboard fsck/base udev encrypt autodetect modconf block lvm2 filesystems keyboard fsck/g' /etc/mkinitcpio.conf
 mkinitcpio -p linux
 
 # setup efi
