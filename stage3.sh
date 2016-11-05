@@ -1,5 +1,8 @@
 #!/bin/bash
 # goo.gl/ayIfUA
+# setup crypttab
+echo "home        /dev/sda3 none luks,timeout=180" >> /etc/crypttab
+
 # setup locale
 sed -i 's/#en_GB/en_GB/g' /etc/locale.gen
 sed -i 's/#en_US/en_US/g' /etc/locale.gen
@@ -83,7 +86,7 @@ pacman -S --noconfirm gvim lightdm lightdm-gtk-greeter i3-wm i3status dmenu term
 systemctl enable lightdm
 
 # cli apps
-pacman -S --noconfirm openssh vagrant gnu-netcat pkgfile bind-tools nmap nethogs sudo htop tmux iotop git tig the_silver_searcher puppet dos2unix ncdu ranger
+pacman -S --noconfirm openssh vagrant gnu-netcat pkgfile bind-tools nmap nethogs sudo htop tmux iotop git tig the_silver_searcher puppet dos2unix ncdu ranger docker
 pkgfile -u
 
 # create user
