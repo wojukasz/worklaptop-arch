@@ -113,13 +113,20 @@ gpasswd -a alan sudo
 sudo -u alan mkdir -p /home/alan/git
 cd /home/alan/git
 sudo -u alan git clone --recursive https://github.com/demon012/dotphiles
-sudo -u alan ./dotphiles/dotsync/bin/dotsync -L
+cd /home/alan/git/dotphiles/
+sudo -u alan git submodule update
+sudo -u alan ./dotsync/bin/dotsync -L
 
 # install yaourt
 cd /tmp/
 sudo -u alan git clone https://aur.archlinux.org/package-query.git
+cd /tmp/package-query
+sudo -u alan makepkg -s
+pacman -U --noconfirm *.tar.xz
 sudo -u alan git clone https://aur.archlinux.org/yaourt.git
-cd /tmp/package-query.git
+cd /tmp/yaourt
+sudo -u alan makepkg -s
+pacman -U --noconfirm *.tar.xz
 
 # manual commands:
 echo "run:"
