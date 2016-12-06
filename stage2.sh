@@ -1,6 +1,6 @@
 #!/bin/bash
 ## stage 2 ##
-pacman -S --noconfirm lvm2
+pacman -S --noconfirm lvm2 f2fs-tools
 pvcreate /dev/mapper/lvm
 vgcreate volgroup /dev/mapper/lvm
 lvcreate -L 20G volgroup -n lvolswap
@@ -8,8 +8,8 @@ lvcreate -l 50%FREE volgroup -n lvolroot
 lvcreate -l 100%FREE volgroup -n lvolhome
 
 mkswap -L swap /dev/mapper/volgroup-lvolswap
-mkfs.ext4 -L root /dev/mapper/volgroup-lvolroot
-mkfs.ext4 -L home /dev/mapper/volgroup-lvolhome
+mkfs.f2fs -L root /dev/mapper/volgroup-lvolroot
+mkfs.f2fs -L home /dev/mapper/volgroup-lvolhome
 
 # mount partitions
 mount /dev/mapper/volgroup-lvolroot /mnt
