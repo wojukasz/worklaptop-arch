@@ -88,7 +88,7 @@ pacman -S --noconfirm gvim lightdm lightdm-gtk-greeter i3-wm i3status dmenu term
 systemctl enable lightdm
 
 # cli apps
-pacman -S --noconfirm openssh vagrant gnu-netcat pkgfile bind-tools nmap nethogs sudo htop tmux iotop git tig the_silver_searcher puppet dos2unix ncdu ranger docker rsync aria2 whois aws-cli graphviz
+pacman -S --noconfirm openssh vagrant gnu-netcat pkgfile bind-tools nmap nethogs sudo htop tmux iotop git tig the_silver_searcher puppet dos2unix ncdu ranger docker rsync aria2 whois aws-cli graphviz pwgen
 pkgfile -u
 
 # create user
