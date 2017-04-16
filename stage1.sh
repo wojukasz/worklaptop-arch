@@ -30,9 +30,10 @@ echo "$COMMAND"
 SEL_DISK=$(eval $COMMAND)
 COMMAND="$(which dialog) --clear"
 eval $COMMAND
-COMMAND="$(which dialog) --stdout --yesno \"Are you sure you want to wipe ${SEL_DISK} and install Arch Linux?\" 5 80"
+COMMAND="$(which dialog) --yesno \"Are you sure you want to wipe ${SEL_DISK} and install Arch Linux?\" 5 80"
 echo "$COMMAND"
-if [ "$(eval $COMMAND)" == "no" ];
+
+if eval "$COMMAND" -ne 0;
 then
     clear
     echo "OK not installing to ${SEL_DISK}. Exiting..."
