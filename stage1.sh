@@ -9,6 +9,27 @@
 # wq
 # end-of-script
 
+get_children()
+{
+    local DISKNAME="$1"
+
+    NUM_DISKS=$(lsblk -J | jq  '.[] | length')
+    for CUR_DISK in $(seq 0 $((NUM_DISKS - 1)));
+    do
+        if [ $(lsblk -J | jq -r ".[][$CUR_DISK].name") == "$DISKNAME" ];
+        then
+            DISK_CHILDREN="$(lsblk -J | jq -r \".[][$CUR_DISK].children\")"
+            break
+        fi
+    done
+}
+
+get_child()
+{
+    local CHILD_NUM="$1"
+    CHILD_NAME=$(echo "$DISK_CHILDREN" | jq -r ".[$CHILD_NUM]")
+}
+
 # Update package lists
 pacman -Sy --noconfirm jq
 
@@ -39,9 +60,16 @@ then
     echo "OK not installing to ${SEL_DISK}. Exiting..."
     exit 1
 else
+    unset COMMAND
+    unset DISK_NAME
+    unset DISKS
+
     DISK="$SEL_DISK"
     DISK_PATH="/dev/$SEL_DISK"
+
+    unset SEL_DISK
 fi
+
 
 # Setup EFI and boot
 parted -s "$DISK_PATH" "mklabel gpt"
@@ -53,6 +81,11 @@ parted -s "$DISK_PATH" "name 2 boot"
 parted -s "$DISK_PATH" "name 3 lvm"
 parted -s "$DISK_PATH" "toggle 1 boot"
 parted -s "$DISK_PATH" "toggle 3 lvm"
+
+get_children "$DISK"
+get_child 0
+
+echo "$CHILD_NAME"
 
 #mkfs.vfat -F32 /dev/sda1
 #mkfs.ext4 -F /dev/sda2
