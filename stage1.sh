@@ -14,7 +14,7 @@ pacman -Sy --noconfirm jq
 
 # *TODO* Disk detection
 NUM_DISKS=$(lsblk -J | jq  '.[] | length')
-for CUR_DISK in $(seq 0 "$NUM_DISKS");
+for CUR_DISK in $(seq 0 $((NUM_DISKS - 1)));
 do
     echo "${CUR_DISK}"
 done
