@@ -37,7 +37,7 @@ if ! eval $COMMAND
 then
     clear
     echo "OK not installing to ${SEL_DISK}. Exiting..."
-    return 1
+    exit 1
 fi
 
 
