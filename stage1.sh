@@ -22,7 +22,7 @@ do
     DISKS="${DISKS}${DISK_NAME} ${DISK_SIZE} "
 done
 
-COMMAND="dialog --menu \"Choose the disk to install to (all data will be destroyed on the selected disk):\" 80 80 70 \"${DISKS}\""
+COMMAND="dialog --menu \"Choose the disk to install to (all data will be destroyed on the selected disk):\" 80 80 70 ${DISKS}"
 echo "$COMMAND"
 "$COMMAND"
 
