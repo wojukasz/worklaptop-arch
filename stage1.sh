@@ -25,7 +25,7 @@ do
     fi
 done
 
-COMMAND="dialog --menu \"Choose the disk to install to (all data will be destroyed on the selected disk):\" 80 80 70 ${DISKS}"
+COMMAND="$(which dialog) --menu \"Choose the disk to install to (all data will be destroyed on the selected disk):\" 80 80 70 ${DISKS}"
 echo "$COMMAND"
 "$COMMAND"
 
