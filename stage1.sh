@@ -38,24 +38,24 @@ then
     clear
     echo "OK not installing to ${SEL_DISK}. Exiting..."
     exit 1
+else
+    DISK="$SEL_DISK"
+    DISK_PATH="/dev/$SEL_DISK"
 fi
 
-
-
-
 # Setup EFI and boot
-# parted -s /dev/sda "mklabel gpt"
-# parted -s /dev/sda "mkpart esp fat32 1M 1G"
-# parted -s /dev/sda "mkpart boot ext4 1G 2G"
-# parted -s /dev/sda "mkpart lvm ext2 2G -1"
-# parted -s /dev/sda "name 1 esp"
-# parted -s /dev/sda "name 2 boot"
-# parted -s /dev/sda "name 3 lvm"
-# parted -s /dev/sda "toggle 1 boot"
-# parted -s /dev/sda "toggle 3 lvm"
+parted -s "$DISK_PATH" "mklabel gpt"
+parted -s "$DISK_PATH" "mkpart esp fat32 1M 1G"
+parted -s "$DISK_PATH" "mkpart boot ext4 1G 2G"
+parted -s "$DISK_PATH" "mkpart lvm ext2 2G -1"
+parted -s "$DISK_PATH" "name 1 esp"
+parted -s "$DISK_PATH" "name 2 boot"
+parted -s "$DISK_PATH" "name 3 lvm"
+parted -s "$DISK_PATH" "toggle 1 boot"
+parted -s "$DISK_PATH" "toggle 3 lvm"
 
-# mkfs.vfat -F32 /dev/sda1
-# mkfs.ext4 -F /dev/sda2
+#mkfs.vfat -F32 /dev/sda1
+#mkfs.ext4 -F /dev/sda2
 
 # ## end stage 1 ##
 
