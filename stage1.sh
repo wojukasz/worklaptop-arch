@@ -33,7 +33,7 @@ eval $COMMAND
 COMMAND="$(which dialog) --yesno \"Are you sure you want to wipe ${SEL_DISK} and install Arch Linux?\" 5 80"
 echo "$COMMAND"
 
-if eval "$COMMAND" -ne 0;
+if ! eval $COMMAND
 then
     clear
     echo "OK not installing to ${SEL_DISK}. Exiting..."
