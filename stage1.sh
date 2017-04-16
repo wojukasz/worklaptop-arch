@@ -1,13 +1,13 @@
 #!/bin/bash
 ## stage 1 ##
 # enable multilib
-ex - /etc/pacman.conf << end-of-script
-93
-s/#//
-+
-s/#//
-wq
-end-of-script
+# ex - /etc/pacman.conf << end-of-script
+# 93
+# s/#//
+# +
+# s/#//
+# wq
+# end-of-script
 
 # Update package lists
 pacman -Sy --noconfirm jq
@@ -25,9 +25,21 @@ do
     fi
 done
 
-COMMAND="$(which dialog) --menu \"Choose the disk to install to (all data will be destroyed on the selected disk):\" 80 80 70 ${DISKS}"
+COMMAND="$(which dialog) --stdout --menu \"Choose the disk to install to (all data will be destroyed on the selected disk):\" 80 80 70 ${DISKS}"
 echo "$COMMAND"
-"$COMMAND"
+SEL_DISK=$($COMMAND)
+COMMAND="$(which dialog) --clear"
+COMMAND="$(which dialog) --stdout --yesno \"Are you sure you want to wipe ${SEL_DISK} and install Arch Linux?\" 5 80"
+echo "$COMMAND"
+if [ "$($COMMAND)" == "no" ];
+then
+    clear
+    echo "OK not installing to ${SEL_DISK}. Exiting..."
+    return 1
+fi
+
+
+
 
 # Setup EFI and boot
 # parted -s /dev/sda "mklabel gpt"
