@@ -14,10 +14,15 @@ pacman -Sy --noconfirm jq
 
 # *TODO* Disk detection
 NUM_DISKS=$(lsblk -J | jq  '.[] | length')
+DISKS=""
 for CUR_DISK in $(seq 0 $((NUM_DISKS - 1)));
 do
-    echo "${CUR_DISK}"
+    DISK_NAME=$(lsblk -J | jq ".[][$CUR_DISK].name")
+    DISK_SIZE=$(lsblk -J | jq ".[][$CUR_DISK].size")
+    DISKS="${DISKS}${DISK_NAME} ${DISK_SIZE} "
 done
+
+dialog --menu "Choose the disk to install to (all data will be destroyed on the selected disk):" 80 80 70 "${DISKS}"
 
 # Setup EFI and boot
 # parted -s /dev/sda "mklabel gpt"
