@@ -89,7 +89,7 @@ get_required_hostname() # {{{
     REQUIRED_HOSTNAME="$(eval $COMMAND)"
     clear
 } # }}}
-partiton_disk() # {{{
+partition_disk() # {{{
 {
     echo "Partitioning disk: $DISK_PATH"
     # Setup EFI and boot
@@ -166,6 +166,7 @@ install_packages() # {{{
         curl
         efibootmgr
         f2fs-tools
+        git
         puppet
         wget
     )
@@ -190,21 +191,26 @@ setup_efi() # {{{
 } # }}}
 install_r10k() # {{{
 {
+    chroot_command "gem install r10k"
 } # }}}
 get_puppet_code() # {{{
 {
+    chroot_command "git clone https://github.com/alanjjenkins/alan-puppet /puppet"
 } #}}}
 get_puppet_modules() # {{{
 {
+    chroot_command "cd /puppet/; r10k puppetfile install;"
 } # }}}
 perform_puppet_run() # {{{
+{
+    chroot_command "cd /puppet/; ./apply.sh"
 } # }}}
 
 install_deps
 select_install_disk
 get_encryption_password
 get_required_hostname
-partiton_disk
+partition_disk
 format_partitions
 setup_luks
 mount_partitions
