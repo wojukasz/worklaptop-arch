@@ -9,7 +9,7 @@
 # wq
 # end-of-script
 
-get_children()
+get_partitions()
 {
     local DISKNAME="$1"
 
@@ -24,10 +24,10 @@ get_children()
     done
 }
 
-get_child()
+get_partition()
 {
     local CHILD_NUM="$1"
-    CHILD_NAME=$(echo "$DISK_CHILDREN" | jq -r ".[$CHILD_NUM]")
+    CHILD_NAME=$(echo "$DISK_CHILDREN" | jq -r ".[$CHILD_NUM].name")
 }
 
 # Update package lists
@@ -82,13 +82,14 @@ parted -s "$DISK_PATH" "name 3 lvm"
 parted -s "$DISK_PATH" "toggle 1 boot"
 parted -s "$DISK_PATH" "toggle 3 lvm"
 
-get_children "$DISK"
-#get_child 0
+get_partitions "$DISK"
 
 echo "$CHILD_NAME"
 
-#mkfs.vfat -F32 /dev/sda1
-#mkfs.ext4 -F /dev/sda2
+get_partition 0
+mkfs.vfat -F32 /dev/"$CHILD_NAME"
+get_partition 1
+mkfs.ext4 -F /dev/"$CHILD_NAME"
 
 # ## end stage 1 ##
 
