@@ -89,12 +89,6 @@ get_required_hostname() # {{{
     REQUIRED_HOSTNAME="$(eval $COMMAND)"
     clear
 } # }}}
-# get_wifi_details() # {{{
-# {
-#     local COMMAND="dialog --stdout --inputbox \"Please enter the hostname you want to use for the system.\" 8 50"
-#     REQUIRED_HOSTNAME="$(eval $COMMAND)"
-#     clear
-# } # }}}
 partiton_disk() # {{{
 {
     echo "Partitioning disk: $DISK_PATH"
@@ -194,6 +188,17 @@ setup_efi() # {{{
     local LUKSUUID=$(blkid /dev/$PART_NAME | awk '{ print $2; }' | sed 's/"//g')
     efibootmgr -d $DISK_PATH -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u "cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img"
 } # }}}
+install_r10k() # {{{
+{
+} # }}}
+get_puppet_code() # {{{
+{
+} #}}}
+get_puppet_modules() # {{{
+{
+} # }}}
+perform_puppet_run() # {{{
+} # }}}
 
 install_deps
 select_install_disk
@@ -209,3 +214,7 @@ setup_hostname
 install_packages
 create_initcpio
 setup_efi
+install_r10k
+get_puppet_code
+get_puppet_modules
+perform_puppet_run
