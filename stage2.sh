@@ -8,8 +8,8 @@ lvcreate -l 50%FREE volgroup -n lvolroot
 lvcreate -l 100%FREE volgroup -n lvolhome
 
 mkswap -L swap /dev/mapper/volgroup-lvolswap
-mkfs.f2fs -L root /dev/mapper/volgroup-lvolroot
-mkfs.f2fs -L home /dev/mapper/volgroup-lvolhome
+mkfs.f2fs -l root /dev/mapper/volgroup-lvolroot
+mkfs.f2fs -l home /dev/mapper/volgroup-lvolhome
 
 # mount partitions
 mount /dev/mapper/volgroup-lvolroot /mnt
