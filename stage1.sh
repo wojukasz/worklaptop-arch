@@ -18,7 +18,7 @@ get_children()
     do
         if [ $(lsblk -J | jq -r ".[][$CUR_DISK].name") == "$DISKNAME" ];
         then
-            DISK_CHILDREN="$(lsblk -J | jq -r \".[][$CUR_DISK].children\")"
+            DISK_CHILDREN=$(lsblk -J | jq -r ".[][$CUR_DISK].children")
             break
         fi
     done
@@ -83,7 +83,7 @@ parted -s "$DISK_PATH" "toggle 1 boot"
 parted -s "$DISK_PATH" "toggle 3 lvm"
 
 get_children "$DISK"
-get_child 0
+#get_child 0
 
 echo "$CHILD_NAME"
 
