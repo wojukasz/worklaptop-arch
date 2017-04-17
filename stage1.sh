@@ -28,6 +28,12 @@ get_partition() # {{{
     local CHILD_NUM="$1"
     PART_NAME=$(echo "$DISK_CHILDREN" | jq -r ".[$CHILD_NUM].name")
 } # }}}
+chroot_command() # {{{
+{
+    COMMAND="arch-chroot /mnt $1"
+    echo "Running: $COMMAND"
+    eval $COMMAND
+} # }}}
 install_deps() # {{{
 {
     pacman -Sy --noconfirm jq lvm2 f2fs-tools
@@ -75,8 +81,20 @@ get_encryption_password() # {{{
 {
     local COMMAND="dialog --stdout --passwordbox \"Please enter the password to use for disk encryption\" 8 50"
     ENCRPYTION_PASS="$(eval $COMMAND)"
+    dialog --clear
+} # }}}
+get_required_hostname() # {{{
+{
+    local COMMAND="dialog --stdout --inputbox \"Please enter the hostname you want to use for the system.\" 8 50"
+    REQUIRED_HOSTNAME="$(eval $COMMAND)"
     clear
 } # }}}
+# get_wifi_details() # {{{
+# {
+#     local COMMAND="dialog --stdout --inputbox \"Please enter the hostname you want to use for the system.\" 8 50"
+#     REQUIRED_HOSTNAME="$(eval $COMMAND)"
+#     clear
+# } # }}}
 partiton_disk() # {{{
 {
     echo "Partitioning disk: $DISK_PATH"
@@ -117,6 +135,7 @@ setup_luks() # {{{
 } # }}}
 mount_partitions() # {{{
 {
+    echo "Mounting partitions"
     mount /dev/mapper/volgroup-lvolroot /mnt
     mkdir /mnt/{home,boot,esp}
     mount /dev/mapper/volgroup-lvolhome /mnt/home
@@ -128,16 +147,65 @@ mount_partitions() # {{{
 } # }}}
 install_base_system() # {{{
 {
+    echo "Installing system"
     pacstrap /mnt base base-devel
     genfstab -L /mnt > /mnt/etc/fstab
+} # }}}
+setup_locales() # {{{
+{
+    echo "Setting locale"
+    chroot_command "sed -i 's/#en_GB/en_GB/g' /etc/locale.gen"
+    chroot_command "sed -i 's/#en_US/en_US/g' /etc/locale.gen"
+    chroot_command "locale-gen"
+    chroot_command "localectl set-locale LANG=en_GB.UTF-8"
+} # }}}
+setup_hostname() { # {{{
+    echo "Setting hostname to $REQUIRED_HOSTNAME"
+    #chroot_command "bash echo 'test' > /etc/hostname"
+    echo "$REQUIRED_HOSTNAME" > /mnt/etc/hostname
+    chroot_command "hostname \"$REQUIRED_HOSTNAME\""
+} # }}}
+install_packages() # {{{
+{
+    echo "Installing packages"
+    local PACKAGES=(
+        curl
+        efibootmgr
+        f2fs-tools
+        puppet
+        wget
+    )
+    chroot_command "pacman -S --noconfirm ${PACKAGES[*]}"
+} # }}}
+create_initcpio() # {{{
+{
+    echo "Creating initcpio"
+    chroot_command "sed -i 's/base udev autodetect modconf block filesystems keyboard fsck/base udev encrypt autodetect modconf block lvm2 filesystems keyboard fsck/g' /etc/mkinitcpio.conf"
+    chroot_command "mkinitcpio -p linux"
+} # }}}
+setup_efi() # {{{
+{
+    echo "Setup EFI"
+    mkdir -p /mnt/esp/EFI/arch
+    cp /mnt/boot/vmlinuz-linux /mnt/esp/EFI/arch
+    cp /mnt/boot/initramfs-linux.img /mnt/esp/EFI/arch
+
+    get_partition 2
+    local LUKSUUID=$(blkid /dev/$PART_NAME | awk '{ print $2; }' | sed 's/"//g')
+    efibootmgr -d $DISK_PATH -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u "cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img"
 } # }}}
 
 install_deps
 select_install_disk
 get_encryption_password
+get_required_hostname
 partiton_disk
 format_partitions
 setup_luks
 mount_partitions
 install_base_system
-
+setup_locales
+setup_hostname
+install_packages
+create_initcpio
+setup_efi
