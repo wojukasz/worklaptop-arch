@@ -158,7 +158,7 @@ setup_locales() # {{{
     chroot_command "sed -i 's/#en_GB/en_GB/g' /etc/locale.gen"
     chroot_command "sed -i 's/#en_US/en_US/g' /etc/locale.gen"
     chroot_command "locale-gen"
-    chroot_command "localectl set-locale LANG=en_GB.UTF-8"
+    echo 'LANG=en_GB.UTF-8' > /mnt/etc/locale.conf
 } # }}}
 setup_hostname() { # {{{
     echo "Setting hostname to $REQUIRED_HOSTNAME"
