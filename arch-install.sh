@@ -9,6 +9,9 @@
 # wq
 # end-of-script
 
+set -euo pipefail
+IFS=$'\n\t'
+
 get_partitions() # {{{
 {
     local DISKNAME="$1"
@@ -146,7 +149,7 @@ mount_partitions() # {{{
 install_base_system() # {{{
 {
     echo "Installing system"
-    pacstrap /mnt base base-devel
+    pacstrap /mnt base base-devel curl efibootmgr f2fs-tools git puppet wget
     genfstab -L /mnt > /mnt/etc/fstab
 } # }}}
 setup_locales() # {{{
@@ -162,19 +165,6 @@ setup_hostname() { # {{{
     #chroot_command "bash echo 'test' > /etc/hostname"
     echo "$REQUIRED_HOSTNAME" > /mnt/etc/hostname
     chroot_command "hostname \"$REQUIRED_HOSTNAME\""
-} # }}}
-install_packages() # {{{
-{
-    echo "Installing packages"
-    local PACKAGES=(
-        curl
-        efibootmgr
-        f2fs-tools
-        git
-        puppet
-        wget
-    )
-    chroot_command "pacman -S --noconfirm ${PACKAGES[*]}"
 } # }}}
 create_initcpio() # {{{
 {
@@ -199,7 +189,7 @@ install_r10k() # {{{
 } # }}}
 get_puppet_code() # {{{
 {
-    chroot_command "git clone https://github.com:alanjjenkins/puppet.git /puppet"
+    chroot_command "git clone https://github.com/alanjjenkins/puppet.git /puppet"
 } #}}}
 get_puppet_modules() # {{{
 {
@@ -228,7 +218,6 @@ mount_partitions
 install_base_system
 setup_locales
 setup_hostname
-install_packages
 create_initcpio
 setup_efi
 install_r10k
