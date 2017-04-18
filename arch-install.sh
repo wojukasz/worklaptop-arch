@@ -53,8 +53,12 @@ select_install_disk() # {{{
     done
 
     COMMAND="$(which dialog) --stdout --menu \"Choose the disk to install to (all data will be destroyed on the selected disk):\" 80 80 70 ${DISKS}"
-    echo "$COMMAND"
-    SEL_DISK=$(eval $COMMAND)
+    if ! SEL_DISK=$(eval $COMMAND)
+    then
+        clear
+        echo "OK aborting installation as no disk selected."
+        exit
+    fi
     COMMAND="$(which dialog) --clear"
     eval $COMMAND
     COMMAND="$(which dialog) --yesno \"Are you sure you want to wipe ${SEL_DISK} and install Arch Linux?\" 5 80"
@@ -195,15 +199,22 @@ install_r10k() # {{{
 } # }}}
 get_puppet_code() # {{{
 {
-    chroot_command "git clone https://github.com/alanjjenkins/alan-puppet /puppet"
+    chroot_command "git clone https://github.com:alanjjenkins/puppet.git /puppet"
 } #}}}
 get_puppet_modules() # {{{
 {
-    chroot_command "cd /puppet/; r10k puppetfile install;"
+    cat <<'END' | arch-chroot /mnt su -l root
+    cd /puppet
+    /root/.gem/ruby/2.4.0/bin/r10k puppetfile install
+END
 } # }}}
 perform_puppet_run() # {{{
 {
-    chroot_command "cd /puppet/; ./apply.sh"
+    chroot_command "bash \"cd /puppet/; ./apply.sh; exit;\""
+    cat <<'END' | arch-chroot /mnt su -l root
+    cd /puppet/
+    ./apply.sh
+END
 } # }}}
 
 install_deps
