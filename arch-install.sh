@@ -200,7 +200,6 @@ END
 } # }}}
 perform_puppet_run() # {{{
 {
-    chroot_command "bash \"cd /puppet/; ./apply.sh; exit;\""
     cat <<'END' | arch-chroot /mnt su -l root
     cd /puppet/
     ./apply.sh
