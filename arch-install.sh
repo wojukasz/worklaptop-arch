@@ -149,7 +149,7 @@ mount_partitions() # {{{
 install_base_system() # {{{
 {
     echo "Installing system"
-    pacstrap /mnt base base-devel curl efibootmgr f2fs-tools git puppet wget
+    pacstrap /mnt base base-devel curl efibootmgr f2fs-tools git puppet wget ruby-shadow
     genfstab -L /mnt > /mnt/etc/fstab
 } # }}}
 setup_locales() # {{{
