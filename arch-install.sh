@@ -94,6 +94,12 @@ get_required_hostname() # {{{
 {
     local COMMAND="dialog --stdout --inputbox \"Please enter the hostname you want to use for the system.\" 8 50"
     REQUIRED_HOSTNAME="$(eval $COMMAND)"
+    dialog --clear
+} # }}}
+get_facter_facts() # {{{
+{
+    local COMMAND="dialog --stdout --inputbox \"Please enter any custom facter facts you want to use for the system separated by commas e.g. (owner=alan,envtype=prod).\" 8 50"
+    FACTS="$(eval $COMMAND)"
     clear
 } # }}}
 partition_disk() # {{{
@@ -198,6 +204,11 @@ get_puppet_modules() # {{{
     /root/.gem/ruby/2.4.0/bin/r10k puppetfile install
 END
 } # }}}
+create_custom_facts() # {{{
+{
+    mkdir -p /mnt/etc/facter/facts.d
+    echo "$FACTS" | tr ',' '\n' > /mnt/etc/facter/facts.d/facts.txt
+} # }}}
 perform_puppet_run() # {{{
 {
     cat <<'END' | arch-chroot /mnt su -l root
@@ -210,6 +221,7 @@ install_deps
 select_install_disk
 get_encryption_password
 get_required_hostname
+get_facter_facts
 partition_disk
 format_partitions
 setup_luks
@@ -221,5 +233,6 @@ create_initcpio
 setup_efi
 install_r10k
 get_puppet_code
+create_custom_facts
 get_puppet_modules
 perform_puppet_run
