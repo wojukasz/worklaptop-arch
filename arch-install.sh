@@ -201,7 +201,7 @@ install_r10k() # {{{
 } # }}}
 get_puppet_code() # {{{
 {
-    chroot_command "git clone --depth 1 https://github.com/alanjjenkins/puppet.git /puppet"
+    chroot_command "git clone --depth=1 https://github.com/alanjjenkins/puppet.git /puppet"
 } #}}}
 get_puppet_modules() # {{{
 {
