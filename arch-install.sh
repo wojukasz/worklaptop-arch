@@ -102,6 +102,12 @@ get_facter_facts() # {{{
     FACTS="$(eval $COMMAND)"
     clear
 } # }}}
+wipe_disk() # {{{
+{
+    echo "Wiping disk"
+    wipefs -a "$DISK_PATH"
+}
+# }}}
 partition_disk() # {{{
 {
     echo "Partitioning disk: $DISK_PATH"
@@ -195,7 +201,7 @@ install_r10k() # {{{
 } # }}}
 get_puppet_code() # {{{
 {
-    chroot_command "git clone https://github.com/alanjjenkins/puppet.git /puppet"
+    chroot_command "git clone --depth 1 https://github.com/alanjjenkins/puppet.git /puppet"
 } #}}}
 get_puppet_modules() # {{{
 {
@@ -222,6 +228,7 @@ select_install_disk
 get_encryption_password
 get_required_hostname
 get_facter_facts
+wipe_disk
 partition_disk
 format_partitions
 setup_luks
