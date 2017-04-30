@@ -216,18 +216,19 @@ EOF
 EOF
 
     chroot_command "systemctl enable efistub-update.path"
-    # get_partition 2
-    # local LUKSUUID=$(blkid /dev/$PART_NAME | awk '{ print $2; }' | sed 's/"//g')
-    #efibootmgr -d $DISK_PATH -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u "cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img"
 } # }}}
-setup_systemd_boot # {{{
+setup_systemd_boot() # {{{
 {
-    /esp/loader/entries/arch.conf
-    arch-chroot bootctl --path=/esp install
-    label Arch Linux
-    linux /EFI/arch/vmlinuz-linux
-    initrd /EFI/arch/initramfs-linux.img
-    options cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img
+    echo "Setting up systemd-boot"
+    get_partition 2
+    local LUKSUUID=$(blkid /dev/$PART_NAME | awk '{ print $2; }' | sed 's/"//g')
+
+    arch-chroot "bootctl --path=/boot/esp install"
+    /mnt/esp/loader/entries/arch.conf
+    echo "label Arch Linux" >> /mnt/boot/esp/loader/entries/arch.conf
+    echo "linux /EFI/arch/vmlinuz-linux" >> /mnt/boot/esp/loader/entries/arch.conf
+    echo "initrd /EFI/arch/initramfs-linux.img" >> /mnt/boot/esp/loader/entries/arch.conf
+    echo "options cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img" >> /mnt/boot/esp/loader/entries/arch.conf
 } # }}}
 install_r10k() # {{{
 {
@@ -272,6 +273,7 @@ setup_locales
 setup_hostname
 create_initcpio
 setup_efi
+setup_systemd_boot
 install_r10k
 get_puppet_code
 create_custom_facts
