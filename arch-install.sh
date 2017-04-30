@@ -150,13 +150,14 @@ mount_partitions() # {{{
 {
     echo "Mounting partitions"
     mount /dev/mapper/volgroup-lvolroot /mnt
-    mkdir /mnt/{home,boot,esp}
+    mkdir /mnt/{home,boot}
+    mkdir /mnt/boot/esp
     mount /dev/mapper/volgroup-lvolhome /mnt/home
 
-    get_partition 0
-    mount "/dev/$PART_NAME" /mnt/esp
     get_partition 1
     mount "/dev/$PART_NAME" /mnt/boot
+    get_partition 0
+    mount "/dev/$PART_NAME" /mnt/boot/esp
 } # }}}
 install_base_system() # {{{
 {
@@ -187,12 +188,36 @@ create_initcpio() # {{{
 setup_efi() # {{{
 {
     echo "Setup EFI"
-    mkdir -p /mnt/esp/EFI/arch
-    cp /mnt/boot/vmlinuz-linux /mnt/esp/EFI/arch
-    cp /mnt/boot/initramfs-linux.img /mnt/esp/EFI/arch
+    mkdir -p /mnt/boot/esp/EFI/arch
+    cp /mnt/boot/vmlinuz-linux /mnt/boot/esp/EFI/arch
+    cp /mnt/boot/initramfs-linux.img /mnt/boot/esp/EFI/arch
 
-    get_partition 2
-    local LUKSUUID=$(blkid /dev/$PART_NAME | awk '{ print $2; }' | sed 's/"//g')
+    cat <<'EOF' >> /mnt/etc/systemd/system/efistub-update.path
+    [Unit]
+    Description=Copy EFISTUB Kernel to EFI System Partition
+
+    [Path]
+    PathChanged=/boot/initramfs-linux-fallback.img
+
+    [Install]
+    WantedBy=multi-user.target
+    WantedBy=system-update.target
+    EOF
+
+    cat <<'EOF' >> /mnt/etc/systemd/system/efistub-update.service
+    [Unit]
+    Description=Copy EFISTUB Kernel to EFI System Partition
+
+    [Service]
+    Type=oneshot
+    ExecStart=/usr/bin/cp -f /boot/vmlinuz-linux /boot/esp/EFI/arch/vmlinuz-linux
+    ExecStart=/usr/bin/cp -f /boot/initramfs-linux.img /boot/esp/EFI/arch/initramfs-linux.img
+    ExecStart=/usr/bin/cp -f /boot/initramfs-linux-fallback.img /boot/esp/EFI/arch/initramfs-linux-fallback.img
+    EOF
+
+    chroot_command "systemctl enable efistub-update.path"
+    # get_partition 2
+    # local LUKSUUID=$(blkid /dev/$PART_NAME | awk '{ print $2; }' | sed 's/"//g')
     #efibootmgr -d $DISK_PATH -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u "cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img"
 } # }}}
 # setup_systemd_boot # {{{
