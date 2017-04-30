@@ -39,7 +39,7 @@ chroot_command() # {{{
 } # }}}
 install_deps() # {{{
 {
-    pacman -Sy --noconfirm jq lvm2 f2fs-tools
+    pacman -Sy --noconfirm jq lvm2 btrfs-progs
 } # }}}
 select_install_disk() # {{{
 {
@@ -143,8 +143,8 @@ setup_luks() # {{{
     lvcreate -l 50%FREE volgroup -n lvolroot
     lvcreate -l 100%FREE volgroup -n lvolhome
     mkswap -L swap /dev/mapper/volgroup-lvolswap
-    mkfs.f2fs -l root /dev/mapper/volgroup-lvolroot
-    mkfs.f2fs -l home /dev/mapper/volgroup-lvolhome
+    mkfs.btrfs -L root /dev/mapper/volgroup-lvolroot
+    mkfs.btrfs -L home /dev/mapper/volgroup-lvolhome
 } # }}}
 mount_partitions() # {{{
 {
@@ -161,7 +161,7 @@ mount_partitions() # {{{
 install_base_system() # {{{
 {
     echo "Installing system"
-    pacstrap /mnt base base-devel curl efibootmgr f2fs-tools git puppet wget ruby-shadow
+    pacstrap /mnt base base-devel curl efibootmgr btrfs-progs git puppet wget ruby-shadow
     genfstab -L /mnt > /mnt/etc/fstab
 } # }}}
 setup_locales() # {{{
