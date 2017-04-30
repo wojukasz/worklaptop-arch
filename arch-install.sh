@@ -193,8 +193,17 @@ setup_efi() # {{{
 
     get_partition 2
     local LUKSUUID=$(blkid /dev/$PART_NAME | awk '{ print $2; }' | sed 's/"//g')
-    efibootmgr -d $DISK_PATH -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u "cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img"
+    #efibootmgr -d $DISK_PATH -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u "cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img"
 } # }}}
+# setup_systemd_boot # {{{
+# {
+#     /esp/loader/entries/arch.conf
+#     arch-chroot bootctl --path=/esp install
+#     label Arch Linux
+#     linux /EFI/arch/vmlinuz-linux
+#     initrd /EFI/arch/initramfs-linux.img
+#     options cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img
+# } # }}}
 install_r10k() # {{{
 {
     chroot_command "gem install r10k"
