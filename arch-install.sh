@@ -202,7 +202,7 @@ setup_efi() # {{{
     [Install]
     WantedBy=multi-user.target
     WantedBy=system-update.target
-    EOF
+EOF
 
     cat <<'EOF' >> /mnt/etc/systemd/system/efistub-update.service
     [Unit]
@@ -213,22 +213,22 @@ setup_efi() # {{{
     ExecStart=/usr/bin/cp -f /boot/vmlinuz-linux /boot/esp/EFI/arch/vmlinuz-linux
     ExecStart=/usr/bin/cp -f /boot/initramfs-linux.img /boot/esp/EFI/arch/initramfs-linux.img
     ExecStart=/usr/bin/cp -f /boot/initramfs-linux-fallback.img /boot/esp/EFI/arch/initramfs-linux-fallback.img
-    EOF
+EOF
 
     chroot_command "systemctl enable efistub-update.path"
     # get_partition 2
     # local LUKSUUID=$(blkid /dev/$PART_NAME | awk '{ print $2; }' | sed 's/"//g')
     #efibootmgr -d $DISK_PATH -p 1 -c -L "Arch Linux" -l /EFI/arch/vmlinuz-linux -u "cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img"
 } # }}}
-# setup_systemd_boot # {{{
-# {
-#     /esp/loader/entries/arch.conf
-#     arch-chroot bootctl --path=/esp install
-#     label Arch Linux
-#     linux /EFI/arch/vmlinuz-linux
-#     initrd /EFI/arch/initramfs-linux.img
-#     options cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img
-# } # }}}
+setup_systemd_boot # {{{
+{
+    /esp/loader/entries/arch.conf
+    arch-chroot bootctl --path=/esp install
+    label Arch Linux
+    linux /EFI/arch/vmlinuz-linux
+    initrd /EFI/arch/initramfs-linux.img
+    options cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img
+} # }}}
 install_r10k() # {{{
 {
     chroot_command "gem install r10k"
