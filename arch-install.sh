@@ -153,6 +153,7 @@ mount_partitions() # {{{
     mkdir /mnt/{home,boot}
     mkdir /mnt/boot/esp
     mount /dev/mapper/volgroup-lvolhome /mnt/home
+    swapon /dev/mapper/volgroup-lvolswap
 
     get_partition 1
     mount "/dev/$PART_NAME" /mnt/boot
@@ -182,7 +183,7 @@ setup_hostname() { # {{{
 create_initcpio() # {{{
 {
     echo "Creating initcpio"
-    chroot_command "sed -i 's/base udev autodetect modconf block filesystems keyboard fsck/base udev encrypt autodetect modconf block lvm2 filesystems keyboard fsck/g' /etc/mkinitcpio.conf"
+    chroot_command "sed -i 's/base udev autodetect modconf block filesystems keyboard fsck/base udev encrypt autodetect modconf block lvm2 resume filesystems keyboard fsck/g' /etc/mkinitcpio.conf"
     chroot_command "mkinitcpio -p linux"
 } # }}}
 setup_efi() # {{{
