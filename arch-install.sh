@@ -140,11 +140,9 @@ setup_luks() # {{{
     pvcreate /dev/mapper/lvm
     vgcreate volgroup /dev/mapper/lvm
     lvcreate -L 20G volgroup -n lvolswap
-    lvcreate -l 50%FREE volgroup -n lvolroot
-    lvcreate -l 100%FREE volgroup -n lvolhome
+    lvcreate -l 100%FREE volgroup -n lvolroot
     mkswap -L swap /dev/mapper/volgroup-lvolswap
     mkfs.btrfs -L root /dev/mapper/volgroup-lvolroot
-    mkfs.btrfs -L home /dev/mapper/volgroup-lvolhome
 } # }}}
 mount_partitions() # {{{
 {
@@ -250,6 +248,8 @@ create_custom_facts() # {{{
 {
     mkdir -p /mnt/etc/facter/facts.d
     echo "$FACTS" | tr ',' '\n' > /mnt/etc/facter/facts.d/facts.txt
+    echo "owner=alan" |  >> /mnt/etc/facter/facts.d/facts.txt
+    echo "profile=kvmgaming" |  >> /mnt/etc/facter/facts.d/facts.txt
 } # }}}
 perform_puppet_run() # {{{
 {
