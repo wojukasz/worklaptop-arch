@@ -228,7 +228,6 @@ setup_systemd_boot() # {{{
     local LUKSUUID=$(blkid /dev/$PART_NAME | awk '{ print $2; }' | sed 's/"//g')
 
     chroot_command "bootctl --path=/boot/esp install"
-    /mnt/esp/loader/entries/arch.conf
     echo "label Arch Linux" >> /mnt/boot/esp/loader/entries/arch.conf
     echo "linux /EFI/arch/vmlinuz-linux" >> /mnt/boot/esp/loader/entries/arch.conf
     echo "initrd /EFI/arch/initramfs-linux.img" >> /mnt/boot/esp/loader/entries/arch.conf
