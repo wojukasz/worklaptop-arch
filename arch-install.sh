@@ -30,6 +30,7 @@ get_partition() # {{{
 {
     local CHILD_NUM="$1"
     PART_NAME=$(echo "$DISK_CHILDREN" | jq -r ".[$CHILD_NUM].name")
+    echo "CHILD_NUM: ${CHILD_NUM} is ${PART_NAME}"
 } # }}}
 chroot_command() # {{{
 {
