@@ -227,7 +227,7 @@ setup_systemd_boot() # {{{
     get_partition 2
     local LUKSUUID=$(blkid /dev/$PART_NAME | awk '{ print $2; }' | sed 's/"//g')
 
-    arch-chroot "bootctl --path=/boot/esp install"
+    chroot_command "bootctl --path=/boot/esp install"
     /mnt/esp/loader/entries/arch.conf
     echo "label Arch Linux" >> /mnt/boot/esp/loader/entries/arch.conf
     echo "linux /EFI/arch/vmlinuz-linux" >> /mnt/boot/esp/loader/entries/arch.conf
