@@ -153,9 +153,8 @@ mount_partitions() # {{{
 {
     echo "Mounting partitions"
     mount /dev/mapper/volgroup-lvolroot /mnt
-    mkdir /mnt/{home,boot}
+    mkdir /mnt/boot
     mkdir /mnt/boot/esp
-    mount /dev/mapper/volgroup-lvolhome /mnt/home
     swapon /dev/mapper/volgroup-lvolswap
 
     get_partition 1
