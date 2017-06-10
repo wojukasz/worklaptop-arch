@@ -281,3 +281,5 @@ get_puppet_code
 create_custom_facts
 get_puppet_modules
 perform_puppet_run
+
+# vim: set foldmethod=marker
