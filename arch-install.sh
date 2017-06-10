@@ -140,9 +140,13 @@ setup_luks() # {{{
     echo -n "$ENCRPYTION_PASS" | cryptsetup open --type luks /dev/"$PART_NAME" lvm -
     pvcreate /dev/mapper/lvm
     vgcreate volgroup /dev/mapper/lvm
+    echo "Creating Swap LV"
     lvcreate -L 20G volgroup -n lvolswap
+    echo "Creating Root LV"
     lvcreate -l 100%FREE volgroup -n lvolroot
+    echo "Creating Formatting Swap LV"
     mkswap -L swap /dev/mapper/volgroup-lvolswap
+    echo "Creating Formatting Root LV"
     mkfs.btrfs -L root /dev/mapper/volgroup-lvolroot
 } # }}}
 mount_partitions() # {{{
