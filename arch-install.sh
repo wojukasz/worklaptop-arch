@@ -154,11 +154,12 @@ mount_partitions() # {{{
     echo "Mounting partitions"
     mount /dev/mapper/volgroup-lvolroot /mnt
     mkdir /mnt/boot
-    mkdir /mnt/boot/esp
     swapon /dev/mapper/volgroup-lvolswap
 
     get_partition 1
     mount "/dev/$PART_NAME" /mnt/boot
+    mkdir /mnt/boot/esp
+
     get_partition 0
     mount "/dev/$PART_NAME" /mnt/boot/esp
 } # }}}
