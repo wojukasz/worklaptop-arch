@@ -234,9 +234,10 @@ setup_systemd_boot() # {{{
     echo "initrd /EFI/arch/initramfs-linux.img" >> /mnt/boot/esp/loader/entries/arch.conf
     echo "options cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img" >> /mnt/boot/esp/loader/entries/arch.conf
 } # }}}
-install_r10k() # {{{
+install_puppet_tools() # {{{
 {
     chroot_command "gem install r10k"
+    chroot_command "gem install hiera-eyaml"
 } # }}}
 get_puppet_code() # {{{
 {
@@ -278,7 +279,7 @@ setup_hostname
 create_initcpio
 setup_efi
 setup_systemd_boot
-install_r10k
+install_puppet_tools
 get_puppet_code
 create_custom_facts
 get_puppet_modules
