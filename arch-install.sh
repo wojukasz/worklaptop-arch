@@ -163,6 +163,11 @@ mount_partitions() # {{{
     mkdir /mnt/boot/esp
     mount "/dev/$PART_NAME" /mnt/boot/esp
 } # }}}
+function find_fastest_mirror() # {{{
+{
+  pacman -S --noconfirm reflector
+  reflector --latest 200 --protocol http --protocol https --sort rate --save /etc/pacman.d/mirrorlist
+} # }}}
 install_base_system() # {{{
 {
     echo "Installing system"
@@ -274,6 +279,7 @@ partition_disk
 format_partitions
 setup_luks
 mount_partitions
+find_fastest_mirror
 install_base_system
 setup_locales
 setup_hostname
