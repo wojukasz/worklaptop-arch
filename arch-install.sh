@@ -236,6 +236,7 @@ setup_systemd_boot() # {{{
 } # }}}
 install_puppet_tools() # {{{
 {
+    chroot_command "gem install rdoc"
     chroot_command "gem install r10k"
     chroot_command "gem install hiera-eyaml"
 } # }}}
