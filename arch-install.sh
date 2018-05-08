@@ -243,9 +243,9 @@ install_puppet_tools() # {{{
 {
     set +e
     chroot_command "gem install rdoc"
-    set -e
     chroot_command "gem install r10k"
     chroot_command "gem install hiera-eyaml"
+    set -e
 } # }}}
 get_puppet_code() # {{{
 {
@@ -255,7 +255,7 @@ get_puppet_modules() # {{{
 {
     cat <<'END' | arch-chroot /mnt su -l root
     cd /puppet
-    /root/.gem/ruby/2.4.0/bin/r10k puppetfile install
+    /root/.gem/ruby/2.5.0/bin/r10k puppetfile install
 END
 } # }}}
 create_custom_facts() # {{{
