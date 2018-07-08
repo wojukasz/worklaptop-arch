@@ -96,12 +96,6 @@ get_required_hostname() # {{{
     REQUIRED_HOSTNAME="$(eval $COMMAND)"
     dialog --clear
 } # }}}
-get_facter_facts() # {{{
-{
-    local COMMAND="dialog --stdout --inputbox \"Please enter any custom facter facts you want to use for the system separated by commas e.g. (owner=alan,envtype=prod).\" 8 50"
-    FACTS="$(eval $COMMAND)"
-    clear
-} # }}}
 wipe_disk() # {{{
 {
     echo "Wiping disk"
@@ -239,43 +233,11 @@ setup_systemd_boot() # {{{
     echo "initrd /EFI/arch/initramfs-linux.img" >> /mnt/boot/esp/loader/entries/arch.conf
     echo "options cryptdevice=${LUKSUUID}:lvm root=/dev/mapper/volgroup-lvolroot resume=/dev/mapper/volgroup-lvolswap rw initrd=/EFI/arch/initramfs-linux.img" >> /mnt/boot/esp/loader/entries/arch.conf
 } # }}}
-install_puppet_tools() # {{{
-{
-    set +e
-    chroot_command "gem install rdoc"
-    chroot_command "gem install r10k"
-    chroot_command "gem install hiera-eyaml"
-    set -e
-} # }}}
-get_puppet_code() # {{{
-{
-    chroot_command "git clone --depth=1 https://github.com/alanjjenkins/puppet.git /puppet"
-} #}}}
-get_puppet_modules() # {{{
-{
-    cat <<'END' | arch-chroot /mnt su -l root
-    cd /puppet
-    /root/.gem/ruby/2.5.0/bin/r10k puppetfile install
-END
-} # }}}
-create_custom_facts() # {{{
-{
-    mkdir -p /mnt/etc/facter/facts.d
-    echo "$FACTS" | tr ',' '\n' > /mnt/etc/facter/facts.d/facts.txt
-} # }}}
-perform_puppet_run() # {{{
-{
-    cat <<'END' | arch-chroot /mnt su -l root
-    cd /puppet/
-    ./apply.sh
-END
-} # }}}
 
 install_deps
 select_install_disk
 get_encryption_password
 get_required_hostname
-get_facter_facts
 wipe_disk
 partition_disk
 format_partitions
@@ -288,8 +250,3 @@ setup_hostname
 create_initcpio
 setup_efi
 setup_systemd_boot
-install_puppet_tools
-get_puppet_code
-create_custom_facts
-get_puppet_modules
-perform_puppet_run
